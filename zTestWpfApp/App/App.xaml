@@ -1,0 +1,10 @@
+﻿<Application x:Class="WPF_Test_Namespace.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WPF_Test_Namespace"
+             StartupUri="MainWindow.xaml">
+    
+    <Application.Resources>
+
+    </Application.Resources>
+</Application>
