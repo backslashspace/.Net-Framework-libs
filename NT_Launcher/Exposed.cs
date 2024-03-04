@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 
@@ -88,70 +88,26 @@ namespace BSS.Launcher
         ///<summary>Execute PowerShell commands or entire scripts.</summary>
         public static String[] Run(String rawPSCommand, Boolean waitForExit = true, Boolean captureOutput = false)
         {
+            if (captureOutput)
+            {
+                PSObject psObject = PowerShell.Create().AddScript(rawPSCommand + " | Out-String").Invoke().First();
+
+                return psObject.ToString().Split(new Char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            }
+
             if (waitForExit)
             {
                 PowerShell.Create().AddScript(rawPSCommand).Invoke();
-
-                return null;
             }
             else
             {
-                ThreadStart e = new(() =>
+                ThreadStart commandWorker = new(() =>
                 {
                     PowerShell.Create().AddScript(rawPSCommand).Invoke();
                 });
-
-                return null;
             }
 
-
-
-
-
-
-
-
-
-
-
-            String[] LeProgg()
-            {
-                if (!captureOutput)
-                {
-                    PowerShell.Create().AddScript(rawPSCommand).Invoke();
-
-                    return null;
-                }
-
-                List<String> PSOut = new();
-
-                if (FormatCustom)
-                {
-                    rawPSCommand += " | Format-Custom";
-                }
-
-                foreach (var i in System.Management.Automation.PowerShell.Create().AddScript(rawPSCommand + " | Out-String").Invoke())
-                {
-                    if (i.ToString() is "")
-                    {
-                        continue;
-                    }
-
-                    PSOut.Add(i.ToString().Replace("\n", "").Replace("\r", ""));
-                }
-
-                for (Int32 i = 0; i < rmTop; i++)
-                {
-                    PSOut.RemoveAt(0);
-                }
-
-                for (Int32 i = 0; i < RMBottom; i++)
-                {
-                    PSOut.RemoveAt(PSOut.Count - 1);
-                }
-
-                return PSOut.ToArray();
-            }
+            return null;
         }
 
         ///<summary>Tests if a PowerShell command can be executed.</summary>
@@ -168,19 +124,5 @@ namespace BSS.Launcher
                 return false;
             }
         }
-
-        private static void AAA()
-        {
-            PowerShell.Create().AddScript(rawPSCommand).Invoke();
-        }
-
-
-
-
-
-
-
-
-
     }
 }

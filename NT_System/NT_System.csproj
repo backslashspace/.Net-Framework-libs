@@ -7,8 +7,8 @@
     <ProjectGuid>{779B4F08-5553-4697-9840-D2FEFF838D55}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NT_System</RootNamespace>
-    <AssemblyName>NT_System</AssemblyName>
+    <RootNamespace>BSS.System</RootNamespace>
+    <AssemblyName>BSS.System</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <LangVersion>10.0</LangVersion>
     <FileAlignment>512</FileAlignment>
@@ -33,7 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
-    <DocumentationFile>bin\Release\NT_System.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\BSS.System.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,8 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CodeBehind\Registry.cs" />
+    <Compile Include="Exposed\Registry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

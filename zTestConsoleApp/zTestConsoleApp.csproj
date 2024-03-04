@@ -47,6 +47,9 @@
     <Reference Include="BSS.Launcher">
       <HintPath>..\NT_Launcher\bin\Debug\BSS.Launcher.dll</HintPath>
     </Reference>
+    <Reference Include="BSS.System">
+      <HintPath>..\NT_System\bin\Debug\BSS.System.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
