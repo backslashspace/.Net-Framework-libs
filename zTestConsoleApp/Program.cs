@@ -6,6 +6,7 @@ using BSS.ColoredConsole;
 using BSS.EmbedExtractor;
 using BSS.HashTools;
 using BSS.Launcher;
+using BSS.System.Windows;
 using BSS.System.Registry;
 using Microsoft.Win32;
 
@@ -17,9 +18,23 @@ namespace Console_Test_Namespace
 
         static void Main(String[] args)
         {
-            var ee = xRegistry.TestRegValuePresense(hKey, "test");
 
-            Console.WriteLine(ee);
+            var e = xLocalUsers.GetSystemUserList();
+
+            Console.WriteLine();
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
 
