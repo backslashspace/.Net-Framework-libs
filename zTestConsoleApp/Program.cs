@@ -19,12 +19,16 @@ namespace Console_Test_Namespace
         static void Main(String[] args)
         {
 
-            var e = xLocalUsers.GetSystemUserList();
-
-            Console.WriteLine();
 
 
+            xConsole.WriteLine(hKey, ConsoleColor.DarkBlue, ConsoleColor.DarkMagenta);
+            Console.WriteLine(hKey);
 
+
+
+
+
+            xRegistry.SetValue("HKEY_LOCAL_MACHINE\\HARDWARE\\test", "", "ff", RegistryValueKind.String);
 
 
 

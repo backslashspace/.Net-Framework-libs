@@ -20,17 +20,14 @@ namespace BSS.System.Registry
             keyName.Split(new Char[] { '\\' }, 2).CopyTo(pathParts, 0);
             pathParts[1] ??= "";
 
-            RegistryKey registryKey = pathParts[0].ToUpper() switch
+            RegistryKey registryKey = OpenSubKey(ref pathParts[0], pathParts[1]);
+
+            if (registryKey == null)
             {
-                "HKEY_CURRENT_USER" => Microsoft.Win32.Registry.CurrentUser.OpenSubKey(pathParts[1], true),
-                "HKEY_LOCAL_MACHINE" => Microsoft.Win32.Registry.LocalMachine.OpenSubKey(pathParts[1], true),
-                "HKEY_CLASSES_ROOT" => Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(pathParts[1], true),
-                "HKEY_USERS" => Microsoft.Win32.Registry.Users.OpenSubKey(pathParts[1], true),
-                "HKEY_PERFORMANCE_DATA" => Microsoft.Win32.Registry.PerformanceData.OpenSubKey(pathParts[1], true),
-                "HKEY_CURRENT_CONFIG" => Microsoft.Win32.Registry.CurrentConfig.OpenSubKey(pathParts[1], true),
-                "HKEY_DYN_DATA" => Microsoft.Win32.Registry.DynData.OpenSubKey(pathParts[1], true),
-                _ => throw new ArgumentException("Arg_RegInvalidKeyName"),
-            };
+                registryKey = OpenSubKey(ref pathParts[0], "");
+                registryKey.CreateSubKey(pathParts[1]);
+                registryKey = OpenSubKey(ref pathParts[0], pathParts[1]);
+            }
 
             //fix Registry.SetValue not beeing able to set uints
             if (registryValueKind is RegistryValueKind.DWord && value is UInt32)
@@ -44,11 +41,10 @@ namespace BSS.System.Registry
                 value = BitConverter.ToInt64(rawUInt64, 0);
             }
 
-            registryKey.CreateSubKey(pathParts[1]);
-
             try
             {
                 registryKey.SetValue(valueName, value, registryValueKind);
+                registryKey.Close();
             }
             catch
             {
@@ -185,7 +181,7 @@ namespace BSS.System.Registry
         ///<returns> if not present.</returns>
         public static Boolean TestRegValuePresense(String path, String value)
         {
-            return TestRegValuePresense(ref path, ref value);
+            return TestRegValuePresence(ref path, ref value);
         }
 
         /// <summary>Humane path to <see cref="RegistryKey"/></summary>

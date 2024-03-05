@@ -69,7 +69,7 @@ namespace BSS.System.Registry
         }
         #endregion
 
-        private static Boolean TestRegValuePresense(ref String path, ref String value)
+        private static Boolean TestRegValuePresence(ref String path, ref String value)
         {
             try
             {
@@ -99,15 +99,20 @@ namespace BSS.System.Registry
             path.Split(new Char[] { '\\' }, 2).CopyTo(pathParts, 0);
             pathParts[1] ??= "";
 
-            return pathParts[0].ToUpper() switch
+            return OpenSubKey(ref pathParts[0], pathParts[1]);
+        }
+
+        private static RegistryKey OpenSubKey(ref String topLevel, String subKey)
+        {
+            return topLevel.ToUpper() switch
             {
-                "HKEY_CURRENT_USER" => Microsoft.Win32.Registry.CurrentUser.OpenSubKey(pathParts[1], true),
-                "HKEY_LOCAL_MACHINE" => Microsoft.Win32.Registry.LocalMachine.OpenSubKey(pathParts[1], true),
-                "HKEY_CLASSES_ROOT" => Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(pathParts[1], true),
-                "HKEY_USERS" => Microsoft.Win32.Registry.Users.OpenSubKey(pathParts[1], true),
-                "HKEY_PERFORMANCE_DATA" => Microsoft.Win32.Registry.PerformanceData.OpenSubKey(pathParts[1], true),
-                "HKEY_CURRENT_CONFIG" => Microsoft.Win32.Registry.CurrentConfig.OpenSubKey(pathParts[1], true),
-                "HKEY_DYN_DATA" => Microsoft.Win32.Registry.DynData.OpenSubKey(pathParts[1], true),
+                "HKEY_CURRENT_USER" => Microsoft.Win32.Registry.CurrentUser.OpenSubKey(subKey, true),
+                "HKEY_LOCAL_MACHINE" => Microsoft.Win32.Registry.LocalMachine.OpenSubKey(subKey, true),
+                "HKEY_CLASSES_ROOT" => Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(subKey, true),
+                "HKEY_USERS" => Microsoft.Win32.Registry.Users.OpenSubKey(subKey, true),
+                "HKEY_PERFORMANCE_DATA" => Microsoft.Win32.Registry.PerformanceData.OpenSubKey(subKey, true),
+                "HKEY_CURRENT_CONFIG" => Microsoft.Win32.Registry.CurrentConfig.OpenSubKey(subKey, true),
+                "HKEY_DYN_DATA" => Microsoft.Win32.Registry.DynData.OpenSubKey(subKey, true),
                 _ => throw new ArgumentException("Arg_RegInvalidKeyName"),
             };
         }
