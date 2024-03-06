@@ -3,9 +3,9 @@ using Org.BouncyCastle.Crypto;
 using System;
 using System.IO;
 
-namespace BSS.Encryption.Fips.HMAC
+namespace BSS.Encryption.Fips
 {
-    public static class xHMAC
+    public static class xHMAC_Fips
     {
         public static Byte[] ComputeHMAC_512(ref Byte[] data, ref Byte[] hmacKey)
         {

@@ -5,58 +5,61 @@ using System;
 using System.IO;
 using Pcg;
 
-namespace BSS.Encryption.Fips.AES
+namespace BSS.Encryption.Fips
 {
-    public static class xCTR
+    public static class xAES_Fips
     {
-        /// <returns>Byte[] (cipher text + iv)</returns>
-        public static Byte[] Encrypt(Byte[] plainBytes, ref Byte[] key)
+        public static class CTR
         {
-            Byte[] iv = new Byte[16];
-            PcgRandom random = new();
-            random.NextBytes(iv);
-
-            FipsAes.Key iKey = new(key);
-            IBlockCipherService provider = CryptoServicesRegistrar.CreateService(iKey);
-
-            using MemoryOutputStream outputCipherText = new();
-
-            ICipherBuilder<IParameters<Algorithm>> encryptorBuilder = provider.CreateEncryptorBuilder(FipsAes.Ctr.WithIV(iv));
-            ICipher encryptor = encryptorBuilder.BuildCipher(outputCipherText);
-
-            using (Stream encryptorStream = encryptor.Stream)
+            /// <returns>Byte[] (cipher text + iv)</returns>
+            public static Byte[] Encrypt(Byte[] plainBytes, ref Byte[] key)
             {
-                encryptorStream.Write(plainBytes, 0, plainBytes.Length);
+                Byte[] iv = new Byte[16];
+                PcgRandom random = new();
+                random.NextBytes(iv);
+
+                FipsAes.Key iKey = new(key);
+                IBlockCipherService provider = CryptoServicesRegistrar.CreateService(iKey);
+
+                using MemoryOutputStream outputCipherText = new();
+
+                ICipherBuilder<IParameters<Algorithm>> encryptorBuilder = provider.CreateEncryptorBuilder(FipsAes.Ctr.WithIV(iv));
+                ICipher encryptor = encryptorBuilder.BuildCipher(outputCipherText);
+
+                using (Stream encryptorStream = encryptor.Stream)
+                {
+                    encryptorStream.Write(plainBytes, 0, plainBytes.Length);
+                }
+
+                Byte[] cipherText = outputCipherText.ToArray();
+
+                Byte[] cipherTextPlusIV = new Byte[cipherText.Length + 16];
+
+                Array.Copy(cipherText, cipherTextPlusIV, cipherText.Length);
+                Array.Copy(iv, 0, cipherTextPlusIV, cipherText.Length, iv.Length);
+
+                return cipherTextPlusIV;
             }
 
-            Byte[] cipherText = outputCipherText.ToArray();
+            public static Byte[] Decrypt(ref Byte[] cipherTextPlusIV, ref Byte[] key)
+            {
+                Byte[] cipherText = new Byte[cipherTextPlusIV.Length - 16];
+                Byte[] iv = new Byte[16];
 
-            Byte[] cipherTextPlusIV = new Byte[cipherText.Length + 16];
+                Array.Copy(cipherTextPlusIV, cipherText, cipherTextPlusIV.Length - 16);
+                Array.Copy(cipherTextPlusIV, cipherTextPlusIV.Length - 16, iv, 0, 16);
 
-            Array.Copy(cipherText, cipherTextPlusIV, cipherText.Length);
-            Array.Copy(iv, 0, cipherTextPlusIV, cipherText.Length, iv.Length);
+                FipsAes.Key iKey = new(key);
 
-            return cipherTextPlusIV;
-        }
+                IBlockCipherService provider = CryptoServicesRegistrar.CreateService(iKey);
+                ICipherBuilder<IParameters<Algorithm>> decryptorBuilder = provider.CreateDecryptorBuilder(FipsAes.Ctr.WithIV(iv));
 
-        public static Byte[] Decrypt(ref Byte[] cipherTextPlusIV, ref Byte[] key)
-        {
-            Byte[] cipherText = new Byte[cipherTextPlusIV.Length - 16];
-            Byte[] iv = new Byte[16];
+                ICipher decryptor = decryptorBuilder.BuildCipher(new MemoryInputStream(cipherText));
 
-            Array.Copy(cipherTextPlusIV, cipherText, cipherTextPlusIV.Length - 16);
-            Array.Copy(cipherTextPlusIV, cipherTextPlusIV.Length - 16, iv, 0, 16);
+                using Stream decryptorStream = decryptor.Stream;
 
-            FipsAes.Key iKey = new(key);
-
-            IBlockCipherService provider = CryptoServicesRegistrar.CreateService(iKey);
-            ICipherBuilder<IParameters<Algorithm>> decryptorBuilder = provider.CreateDecryptorBuilder(FipsAes.Ctr.WithIV(iv));
-
-            ICipher decryptor = decryptorBuilder.BuildCipher(new MemoryInputStream(cipherText));
-
-            using Stream decryptorStream = decryptor.Stream;
-
-            return Streams.ReadAll(decryptorStream);
+                return Streams.ReadAll(decryptorStream);
+            }
         }
     }
 }
