@@ -203,6 +203,7 @@
     <Compile Include="Exposed\Fips\AES\CTR.cs" />
     <Compile Include="Exposed\Fips\ApprovedOnlyMode.cs" />
     <Compile Include="Exposed\Fips\HMAC\HMAC_512.cs" />
+    <Compile Include="Exposed\Fips\SecureRandom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
