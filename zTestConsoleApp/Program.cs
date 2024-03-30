@@ -9,6 +9,7 @@ using BSS.Launcher;
 using BSS.System.Windows;
 using BSS.System.Registry;
 using Microsoft.Win32;
+using BSS.Encryption.Fips;
 
 namespace Console_Test_Namespace
 {
@@ -19,6 +20,15 @@ namespace Console_Test_Namespace
         static void Main(String[] args)
         {
 
+            //xFipsSecureRandomProxy proxy = new();
+
+
+            byte[] test = new Byte[32];
+
+
+            //proxy.NextBytes(ref test);
+
+            
 
 
             xConsole.WriteLine(hKey, ConsoleColor.DarkBlue, ConsoleColor.DarkMagenta);

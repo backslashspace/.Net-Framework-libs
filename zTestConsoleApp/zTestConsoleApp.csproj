@@ -9,6 +9,7 @@
     <RootNamespace>Console_Test_Namespace</RootNamespace>
     <AssemblyName>Console_Test_App</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+	<LangVersion>10.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -40,6 +41,9 @@
     </Reference>
     <Reference Include="BSS.EmbedExtractor">
       <HintPath>..\NT_EmbedExtractor\bin\Debug\BSS.EmbedExtractor.dll</HintPath>
+    </Reference>
+    <Reference Include="BSS.Encryption">
+      <HintPath>..\NT_Encryption\bin\Release\BSS.Encryption.dll</HintPath>
     </Reference>
     <Reference Include="BSS.HashTools">
       <HintPath>..\NT_HashTools\bin\Debug\BSS.HashTools.dll</HintPath>

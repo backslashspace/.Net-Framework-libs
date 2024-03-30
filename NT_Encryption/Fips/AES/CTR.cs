@@ -3,8 +3,6 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Utilities.IO;
 using System;
 using System.IO;
-using Pcg;
-
 namespace BSS.Encryption.Fips
 {
     public static class xAES_Fips
@@ -12,11 +10,12 @@ namespace BSS.Encryption.Fips
         public static class CTR
         {
             /// <returns>Byte[] (cipher text + iv)</returns>
-            public static Byte[] Encrypt(Byte[] plainBytes, ref Byte[] key)
+            public static Byte[] Encrypt(Byte[] plainBytes, ref Byte[] key, ref Byte[] iv)
             {
-                Byte[] iv = new Byte[16];
-                PcgRandom random = new();
-                random.NextBytes(iv);
+                if (iv.Length < 16)
+                {
+                    throw new ArgumentException("Initialization vector should be 16 bytes long");
+                }
 
                 FipsAes.Key iKey = new(key);
                 IBlockCipherService provider = CryptoServicesRegistrar.CreateService(iKey);
