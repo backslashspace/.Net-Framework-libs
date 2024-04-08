@@ -68,9 +68,12 @@ namespace BSS.Launcher
 
             if (redirectOutput)
             {
+                String stdOUT = process.StandardOutput.ReadToEnd();
+                String errOUT = process.StandardError.ReadToEnd();
+
                 process.WaitForExit();
 
-                return new(process.ExitCode, process.StandardOutput.ReadToEnd(), process.StandardError.ReadToEnd());
+                return new(process.ExitCode, stdOUT, errOUT);
             }
             else if (waitForExit)
             {
